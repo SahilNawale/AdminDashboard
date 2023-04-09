@@ -1,60 +1,94 @@
-import { Stack } from "@mui/material"
+import { Stack } from "@mui/material";
 import * as React from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { CardActionArea, Tooltip } from "@mui/material";
-import { Bar, BarChart, CartesianGrid, Legend, XAxis, YAxis } from "recharts";
-import {ComposableMap,Geographies,Geography,Marker } from "react-simple-maps";
-  
+import {Bar,BarChart,CartesianGrid,Legend,XAxis,YAxis,Pie,PieChart,Sector,Cell,ResponsiveContainer} from "recharts";
+import ReactDatamaps from "react-india-states-map";
+import { useState } from "react";
+
+
+const stateCount = {
+  "Maharashtra":10,
+  "Rajasthan":12
+}
+
+
+const data01 = [
+  { name: "Married", value: 400 },
+  { name: "Single", value: 300 },
+  { name: "Divorced", value: 300 },
+  { name: "Widowed", value: 200 },
+];
+
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+
+const RADIAN = Math.PI / 180;
+const renderCustomizedLabel = ({
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  percent,
+  index,
+}) => {
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="white"
+      textAnchor={x > cx ? "start" : "end"}
+      dominantBaseline="central"
+      fontSize={10}
+    >
+      {`${(percent * 100).toFixed(0)}% - ${data01[index]["name"]}`}
+    </text>
+  );
+};
 
 const data = [
-    {
-      "name": "Page A",
-      "uv": 4000,
-      "pv": 2400
-    },
-    {
-      "name": "Page B",
-      "uv": 3000,
-      "pv": 1398
-    },
-    {
-      "name": "Page C",
-      "uv": 2000,
-      "pv": 9800
-    },
-    {
-      "name": "Page D",
-      "uv": 2780,
-      "pv": 3908
-    },
-    {
-      "name": "Page E",
-      "uv": 1890,
-      "pv": 4800
-    },
-    {
-      "name": "Page F",
-      "uv": 2390,
-      "pv": 3800
-    },
-    {
-      "name": "Page G",
-      "uv": 3490,
-      "pv": 4300
-    }
-  ]
+  {
+    name: "20-22",
+    Male: 5,
+    Female: 6,
+  },
+  {
+    name: "22-24",
+    Male: 3,
+    Female: 4,
+  },
+  {
+    name: "24-26",
+    Male: 4,
+    Female: 3,
+  },
+  {
+    name: "26-28",
+    Male: 1,
+    Female: 2,
+  },
+  {
+    name: "28-30",
+    Male: 1,
+    Female: 1,
+  },
+];
 
-
-const geoUrl = "https://raw.githubusercontent.com/deldersveld/topojson/master/continents/south-america.json";
+const geoUrl =
+  "https://raw.githubusercontent.com/deldersveld/topojson/master/continents/south-america.json";
 
 const markers = [
   {
     markerOffset: -30,
     name: "Buenos Aires",
-    coordinates: [-58.3816, -34.6037]
+    coordinates: [-58.3816, -34.6037],
   },
   { markerOffset: 15, name: "La Paz", coordinates: [-68.1193, -16.4897] },
   { markerOffset: 15, name: "Brasilia", coordinates: [-47.8825, -15.7942] },
@@ -66,87 +100,158 @@ const markers = [
   { markerOffset: 15, name: "Paramaribo", coordinates: [-55.2038, 5.852] },
   { markerOffset: 15, name: "Montevideo", coordinates: [-56.1645, -34.9011] },
   { markerOffset: 15, name: "Caracas", coordinates: [-66.9036, 10.4806] },
-  { markerOffset: 15, name: "Lima", coordinates: [-77.0428, -12.0464] }
+  { markerOffset: 15, name: "Lima", coordinates: [-77.0428, -12.0464] },
 ];
 
+const STATES = {
+  Maharashtra: {
+    value: 50,
+    content: {
+      txt:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. A quisquam quae laboriosam sed magni aliquam dolore sequi libero harum, hic nihil. Omnis eos deserunt molestiae harum, cum nemo et temporibus?"
+    }
+  }
+};
+
 export const Homepage = () => {
-    
-    return (
-        <>
-        <Stack direction='row' spacing={2} justifyContent='space-around' sx={{marginTop:"100px"}} flexWrap='wrap'>
-            <Card sx={{ background: "#282e38", color: "white",padding:"30px 30px 10px 10px",width:"400px"}}>
-                <BarChart width={400} height={250} data={data}>
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="pv" fill="#8884d8" />
-                    <Bar dataKey="uv" fill="#82ca9d" />
-                </BarChart>
-            </Card>
-            <Card sx={{ background: "#282e38", color: "white",padding:"30px 30px 10px 10px",width:"400px"}}>
-                <BarChart width={400} height={250} data={data}>
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="pv" fill="#8884d8" />
-                    <Bar dataKey="uv" fill="#82ca9d" />
-                </BarChart>
-            </Card>
-            <Card sx={{ background: "#282e38", color: "white",padding:"30px 30px 30px 30px" ,width:"400px"}}>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Asperiores dignissimos nemo, rerum voluptatum dolorum fugiat animi recusandae laudantium voluptas tenetur repellat quibusdam officiis ullam harum vel temporibus iste nisi deleniti!
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Asperiores dignissimos nemo, rerum voluptatum dolorum fugiat animi recusandae laudantium voluptas tenetur repellat quibusdam officiis ullam harum vel temporibus iste nisi deleniti!
-            </Card>
-        </Stack>
-        <Stack direction='row' spacing={2} justifyContent='space-around' sx={{marginTop:"100px"}} flexWrap='wrap'>
-            <Card sx={{ background: "#282e38", color: "white",padding:"30px 30px 30px 30px" ,width:"400px"}}>
-            <ComposableMap projection="geoAzimuthalEqualArea" projectionConfig={{rotate: [58, 20, 0],scale: 500
-      }}
-    >
-      <Geographies geography={geoUrl}>
-        {({ geographies }) =>
-          geographies.map((geo) => (
-            <Geography
-              key={geo.rsmKey}
-              geography={geo}
-              fill="#EAEAEC"
-              stroke="#D6D6DA"
-            />
-          ))
-        }
-      </Geographies>
-      {markers.map(({ name, coordinates, markerOffset }) => (
-        <Marker key={name} coordinates={coordinates}>
-          <g
-            fill="none"
-            stroke="#FF5533"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            transform="translate(-12, -24)"
-          >
-            <circle cx="12" cy="10" r="3" />
-            <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z" />
-          </g>
-          <text
-            textAnchor="middle"
-            y={markerOffset}
-            style={{ fontFamily: "system-ui", fill: "#5D5A6D" }}
-          >
-            {name}
-          </text>
-        </Marker>
-      ))}
-    </ComposableMap>
-            </Card>
-            <Card sx={{ background: "#282e38", color: "white",padding:"30px 30px 30px 30px" ,width:"400px"}}>
 
-            </Card>
-            <Card sx={{ background: "#282e38", color: "white",padding:"30px 30px 30px 30px" ,width:"400px"}}>
+  const [activeState, setactiveState] = useState({
+    data: STATES.Maharashtra,
+    name: "India"
+  });
 
-            </Card>
-        </Stack>
-        </>
-    )
-}
+  const [stateLists, setStateLists] = useState(STATES);
+
+  const stateOnClick = (data, name) => {
+    setactiveState({ data, name });
+  };
+
+  return (
+    <>
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="space-around"
+        sx={{ marginTop: "100px" }}
+        flexWrap="wrap"
+      >
+        <Card
+          sx={{
+            background: "#282e38",
+            color: "white",
+            padding: "30px 30px 10px 10px",
+            width: "400px",
+          }}
+        >
+          <BarChart width={400} height={250} data={data}>
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="Male" fill="#8884d8" />
+            <Bar dataKey="Female" fill="#82ca9d" />
+          </BarChart>
+        </Card>
+        <Card
+          sx={{
+            background: "#282e38",
+            color: "white",
+            padding: "30px 30px 10px 10px",
+            width: "400px",
+          }}
+        >
+          <BarChart width={400} height={250} data={data}>
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="Female" fill="#8884d8" />
+            <Bar dataKey="Male" fill="#82ca9d" />
+          </BarChart>
+        </Card>
+        <Card
+          sx={{
+            background: "#282e38",
+            color: "white",
+            padding: "30px 30px 30px 30px",
+            width: "400px",
+          }}
+        >
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Asperiores
+          dignissimos nemo, rerum voluptatum dolorum fugiat animi recusandae
+          laudantium voluptas tenetur repellat quibusdam officiis ullam harum
+          vel temporibus iste nisi deleniti! Lorem ipsum dolor sit, amet
+          consectetur adipisicing elit. Asperiores dignissimos nemo, rerum
+          voluptatum dolorum fugiat animi recusandae laudantium voluptas tenetur
+          repellat quibusdam officiis ullam harum vel temporibus iste nisi
+          deleniti!
+        </Card>
+      </Stack>
+      <Stack
+        direction="row"
+        spacing={2}
+        justifyContent="space-around"
+        sx={{ marginTop: "100px" }}
+        flexWrap="wrap"
+      >
+        <Card sx={{background: "#282e38",color: "white",padding: "30px 30px 30px 30px",width: "400px",height:"400px",position:"relative"}}>
+          <ReactDatamaps
+          style={{position:"relative"}}
+            mapLayout={{
+              hoverTitle: "Count",
+              noDataColor: "#D36418",
+              borderColor: "#ffffff"
+            }}
+            hoverComponent={({ value }) => {
+              return (
+                <>
+                  <p>{value.name}-{stateCount[value.name]}</p>
+                </>
+              );
+            }}
+            onClick={stateOnClick}
+            activeState={activeState}
+          />
+        </Card>
+        <Card
+          sx={{
+            background: "#282e38",
+            color: "white",
+            padding: "30px 30px 30px 30px",
+            width: "400px",
+          }}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart width={600} height={600}>
+              <Pie
+                data={data01}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={renderCustomizedLabel}
+                outerRadius={150}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {data.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+        </Card>
+        <Card
+          sx={{
+            background: "#282e38",
+            color: "white",
+            padding: "30px 30px 30px 30px",
+            width: "400px",
+          }}
+        ></Card>
+      </Stack>
+    </>
+  );
+};
